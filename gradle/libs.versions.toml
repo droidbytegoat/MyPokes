@@ -14,6 +14,7 @@ kotlinxCoroutines = "1.10.1"
 kotlinxSerialization = "1.7.3"
 coil = "3.1.0"
 splashScreen = "1.0.1"
+palette = "1.0.0"
 coreKtx = "1.16.0"
 junit = "4.13.2"
 junitExt = "1.3.0"
@@ -25,6 +26,7 @@ turbine = "1.2.0"
 # Core
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-splash-screen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashScreen" }
+androidx-palette = { group = "androidx.palette", name = "palette-ktx", version.ref = "palette" }
 
 # Compose
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }

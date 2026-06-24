@@ -49,6 +49,7 @@ dependencies {
     // Core
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.splash.screen)
+    implementation(libs.androidx.palette)
 
     // Compose
     implementation(platform(libs.compose.bom))
