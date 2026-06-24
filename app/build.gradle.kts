@@ -79,6 +79,10 @@ dependencies {
     // DataStore
     implementation(libs.datastore.preferences)
 
+    // Ktor (types referenced in Hilt modules must be on app's compile classpath)
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.okhttp)
+
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
 
