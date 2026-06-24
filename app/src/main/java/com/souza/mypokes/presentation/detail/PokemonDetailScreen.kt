@@ -1,5 +1,7 @@
 package com.souza.mypokes.presentation.detail
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,10 +52,15 @@ import com.souza.mypokes.presentation.theme.Dimens
 import com.souza.mypokes.presentation.theme.pokemonTypeColor
 
 private const val MAX_STAT_VALUE = 255f
+private fun officialArtworkUrl(id: Int) =
+    "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$id.png"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PokemonDetailScreen(
+    pokemonId: Int,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onNavigateBack: () -> Unit,
     viewModel: PokemonDetailViewModel = hiltViewModel(),
 ) {
@@ -104,64 +111,65 @@ fun PokemonDetailScreen(
             )
         },
     ) { padding ->
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding),
+                .padding(padding)
+                .verticalScroll(rememberScrollState()),
         ) {
-            when {
-                state.isLoading -> LoadingContent()
-                state.error != null -> ErrorContent(
-                    message = state.error!!,
-                    onRetry = { viewModel.dispatch(PokemonDetailIntent.LoadDetail(0)) },
+            with(sharedTransitionScope) {
+                AsyncImage(
+                    model = state.pokemon?.imageUrl ?: officialArtworkUrl(pokemonId),
+                    contentDescription = state.pokemon?.name,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(Dimens.heroImageHeight)
+                        .padding(Dimens.heroImagePadding)
+                        .sharedElement(
+                            state = rememberSharedContentState(key = "pokemon-image-$pokemonId"),
+                            animatedVisibilityScope = animatedVisibilityScope,
+                        ),
                 )
-                state.pokemon != null -> DetailContent(pokemon = state.pokemon!!)
+            }
+
+            when {
+                state.isLoading -> LoadingSection()
+                state.error != null -> ErrorSection(
+                    message = state.error!!,
+                    onRetry = { viewModel.dispatch(PokemonDetailIntent.LoadDetail(pokemonId)) },
+                )
+                state.pokemon != null -> StatsSection(pokemon = state.pokemon!!)
             }
         }
     }
 }
 
 @Composable
-private fun DetailContent(pokemon: PokemonDetail) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-    ) {
-        AsyncImage(
-            model = pokemon.imageUrl,
-            contentDescription = pokemon.name,
-            contentScale = ContentScale.Fit,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(Dimens.heroImageHeight)
-                .padding(Dimens.heroImagePadding),
+private fun StatsSection(pokemon: PokemonDetail) {
+    Column(modifier = Modifier.padding(horizontal = Dimens.paddingXl)) {
+        TypesRow(types = pokemon.types.map { it.name })
+
+        Spacer(modifier = Modifier.height(Dimens.statSectionSpacing))
+
+        PhysicalStats(height = pokemon.height, weight = pokemon.weight)
+
+        Spacer(modifier = Modifier.height(Dimens.paddingXxl))
+
+        Text(
+            text = stringResource(R.string.base_stats),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
         )
 
-        Column(modifier = Modifier.padding(horizontal = Dimens.paddingXl)) {
-            TypesRow(types = pokemon.types.map { it.name })
+        Spacer(modifier = Modifier.height(Dimens.paddingM))
 
-            Spacer(modifier = Modifier.height(Dimens.statSectionSpacing))
-
-            PhysicalStats(height = pokemon.height, weight = pokemon.weight)
-
-            Spacer(modifier = Modifier.height(Dimens.paddingXxl))
-
-            Text(
-                text = stringResource(R.string.base_stats),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-            )
-
-            Spacer(modifier = Modifier.height(Dimens.paddingM))
-
-            pokemon.stats.forEach { stat ->
-                StatRow(stat = stat)
-                Spacer(modifier = Modifier.height(Dimens.paddingS))
-            }
-
-            Spacer(modifier = Modifier.height(Dimens.paddingXxl))
+        pokemon.stats.forEach { stat ->
+            StatRow(stat = stat)
+            Spacer(modifier = Modifier.height(Dimens.paddingS))
         }
+
+        Spacer(modifier = Modifier.height(Dimens.paddingXxl))
     }
 }
 
@@ -253,17 +261,22 @@ private fun StatRow(stat: PokemonStat) {
 }
 
 @Composable
-private fun LoadingContent() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+private fun LoadingSection() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(Dimens.heroImageHeight),
+        contentAlignment = Alignment.Center,
+    ) {
         CircularProgressIndicator()
     }
 }
 
 @Composable
-private fun ErrorContent(message: String, onRetry: () -> Unit) {
+private fun ErrorSection(message: String, onRetry: () -> Unit) {
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .padding(Dimens.paddingHuge),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,

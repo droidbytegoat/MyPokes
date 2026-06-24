@@ -1,5 +1,8 @@
 package com.souza.mypokes.presentation.pokemon
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.SharedTransitionScope.OverlayClip
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -45,6 +48,8 @@ fun PokemonCard(
     isFavorite: Boolean,
     onClick: () -> Unit,
     onFavoriteClick: () -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
 ) {
     var dominantColor by remember(pokemon.id) { mutableStateOf<Color?>(null) }
@@ -64,27 +69,33 @@ fun PokemonCard(
     ) {
         Box {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                AsyncImage(
-                    model = pokemon.imageUrl,
-                    contentDescription = pokemon.name,
-                    contentScale = ContentScale.Fit,
-                    onSuccess = { state ->
-                        scope.launch(Dispatchers.Default) {
-                            val hardware = (state.result.image as? BitmapImage)?.bitmap ?: return@launch
-                            val bitmap = hardware.copy(android.graphics.Bitmap.Config.ARGB_8888, false)
-                            val palette = Palette.from(bitmap).generate()
-                            bitmap.recycle()
-                            val swatch = palette.lightVibrantSwatch
-                                ?: palette.vibrantSwatch
-                                ?: palette.dominantSwatch
-                            swatch?.rgb?.let { rgb -> dominantColor = Color(rgb) }
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .padding(Dimens.paddingS),
-                )
+                with(sharedTransitionScope) {
+                    AsyncImage(
+                        model = pokemon.imageUrl,
+                        contentDescription = pokemon.name,
+                        contentScale = ContentScale.Fit,
+                        onSuccess = { state ->
+                            scope.launch(Dispatchers.Default) {
+                                val hardware = (state.result.image as? BitmapImage)?.bitmap ?: return@launch
+                                val bitmap = hardware.copy(android.graphics.Bitmap.Config.ARGB_8888, false)
+                                val palette = Palette.from(bitmap).generate()
+                                bitmap.recycle()
+                                val swatch = palette.lightVibrantSwatch
+                                    ?: palette.vibrantSwatch
+                                    ?: palette.dominantSwatch
+                                swatch?.rgb?.let { rgb -> dominantColor = Color(rgb) }
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .padding(Dimens.paddingS)
+                            .sharedElement(
+                                state = rememberSharedContentState(key = "pokemon-image-${pokemon.id}"),
+                                animatedVisibilityScope = animatedVisibilityScope,
+                            ),
+                    )
+                }
                 Text(
                     text = pokemon.name,
                     style = MaterialTheme.typography.labelSmall,

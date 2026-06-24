@@ -1,5 +1,7 @@
 package com.souza.mypokes.presentation.favorites
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -34,6 +36,8 @@ private const val GRID_COLUMNS = 2
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onNavigateToDetail: (Int) -> Unit,
     viewModel: FavoritesViewModel = hiltViewModel(),
 ) {
@@ -71,6 +75,8 @@ fun FavoritesScreen(
                 state.favorites.isEmpty() -> EmptyContent()
                 else -> FavoritesGrid(
                     state = state,
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = animatedVisibilityScope,
                     onPokemonClick = { viewModel.dispatch(FavoritesIntent.OnPokemonClick(it)) },
                     onRemoveFavorite = { pokemon -> viewModel.dispatch(FavoritesIntent.RemoveFavorite(pokemon)) },
                 )
@@ -82,6 +88,8 @@ fun FavoritesScreen(
 @Composable
 private fun FavoritesGrid(
     state: FavoritesState,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onPokemonClick: (Int) -> Unit,
     onRemoveFavorite: (com.souza.mypokes.domain.model.Pokemon) -> Unit,
 ) {
@@ -101,6 +109,8 @@ private fun FavoritesGrid(
                 isFavorite = true,
                 onClick = { onPokemonClick(pokemon.id) },
                 onFavoriteClick = { onRemoveFavorite(pokemon) },
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope,
             )
         }
     }

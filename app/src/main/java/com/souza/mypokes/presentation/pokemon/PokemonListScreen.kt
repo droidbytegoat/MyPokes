@@ -1,6 +1,7 @@
 package com.souza.mypokes.presentation.pokemon
 
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -54,6 +55,8 @@ private const val LOAD_MORE_THRESHOLD = 4
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PokemonListScreen(
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onNavigateToDetail: (Int) -> Unit,
     viewModel: PokemonListViewModel = hiltViewModel(),
 ) {
@@ -90,6 +93,8 @@ fun PokemonListScreen(
                 state.displayList.isEmpty() -> EmptyContent()
                 else -> PokemonGridContent(
                     state = state,
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = animatedVisibilityScope,
                     onPokemonClick = { viewModel.dispatch(PokemonListIntent.OnPokemonClick(it)) },
                     onFavoriteClick = { pokemon -> viewModel.dispatch(PokemonListIntent.ToggleFavorite(pokemon)) },
                     onLoadMore = { viewModel.dispatch(PokemonListIntent.LoadNextPage) },
@@ -112,7 +117,6 @@ private fun SearchBarWithAutocomplete(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    // Open dropdown when suggestions arrive; close when query is cleared
     LaunchedEffect(suggestions) {
         expanded = suggestions.isNotEmpty()
     }
@@ -173,6 +177,8 @@ private fun SearchBarWithAutocomplete(
 @Composable
 private fun PokemonGridContent(
     state: PokemonListState,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onPokemonClick: (Int) -> Unit,
     onFavoriteClick: (com.souza.mypokes.domain.model.Pokemon) -> Unit,
     onLoadMore: () -> Unit,
@@ -212,6 +218,8 @@ private fun PokemonGridContent(
                     isFavorite = pokemon.id in state.favoriteIds,
                     onClick = { onPokemonClick(pokemon.id) },
                     onFavoriteClick = { onFavoriteClick(pokemon) },
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = animatedVisibilityScope,
                 )
             }
 
