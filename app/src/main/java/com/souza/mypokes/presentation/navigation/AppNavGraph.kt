@@ -11,6 +11,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.souza.mypokes.presentation.detail.PokemonDetailScreen
 import com.souza.mypokes.presentation.pokemon.PokemonListScreen
 import com.souza.mypokes.presentation.splash.SplashScreen
 
@@ -58,8 +59,9 @@ fun AppNavGraph(
                 navArgument(Screen.PokemonDetail.Args.POKEMON_ID) { type = NavType.IntType }
             ),
         ) {
-            // Implemented in Step 8
-            PlaceholderScreen("Pokémon Detail")
+            PokemonDetailScreen(
+                onNavigateBack = { navController.popBackStack() },
+            )
         }
     }
 }
