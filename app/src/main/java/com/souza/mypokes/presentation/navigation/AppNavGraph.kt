@@ -1,10 +1,6 @@
 package com.souza.mypokes.presentation.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -13,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.souza.mypokes.presentation.detail.PokemonDetailScreen
 import com.souza.mypokes.presentation.favorites.FavoritesScreen
+import com.souza.mypokes.presentation.settings.SettingsScreen
 import com.souza.mypokes.presentation.pokemon.PokemonListScreen
 import com.souza.mypokes.presentation.splash.SplashScreen
 
@@ -53,8 +50,7 @@ fun AppNavGraph(
         }
 
         composable(Screen.Settings.route) {
-            // Implemented in Step 10
-            PlaceholderScreen("Settings")
+            SettingsScreen()
         }
 
         composable(
@@ -67,12 +63,5 @@ fun AppNavGraph(
                 onNavigateBack = { navController.popBackStack() },
             )
         }
-    }
-}
-
-@Composable
-private fun PlaceholderScreen(name: String) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(text = name)
     }
 }
