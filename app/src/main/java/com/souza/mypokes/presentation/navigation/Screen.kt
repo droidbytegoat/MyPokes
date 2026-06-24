@@ -1,7 +1,6 @@
 package com.souza.mypokes.presentation.navigation
 
 sealed class Screen(val route: String) {
-    data object Splash : Screen("splash")
     data object PokemonList : Screen("pokemon_list")
     data object Favorites : Screen("favorites")
     data object Settings : Screen("settings")

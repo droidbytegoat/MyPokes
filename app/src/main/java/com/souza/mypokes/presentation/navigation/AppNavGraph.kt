@@ -11,7 +11,6 @@ import com.souza.mypokes.presentation.detail.PokemonDetailScreen
 import com.souza.mypokes.presentation.favorites.FavoritesScreen
 import com.souza.mypokes.presentation.settings.SettingsScreen
 import com.souza.mypokes.presentation.pokemon.PokemonListScreen
-import com.souza.mypokes.presentation.splash.SplashScreen
 
 @Composable
 fun AppNavGraph(
@@ -20,19 +19,9 @@ fun AppNavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Splash.route,
+        startDestination = Screen.PokemonList.route,
         modifier = modifier,
     ) {
-        composable(Screen.Splash.route) {
-            SplashScreen(
-                onNavigateToMain = {
-                    navController.navigate(Screen.PokemonList.route) {
-                        popUpTo(Screen.Splash.route) { inclusive = true }
-                    }
-                },
-            )
-        }
-
         composable(Screen.PokemonList.route) {
             PokemonListScreen(
                 onNavigateToDetail = { pokemonId ->
