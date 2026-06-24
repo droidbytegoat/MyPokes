@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.souza.mypokes.presentation.detail.PokemonDetailScreen
+import com.souza.mypokes.presentation.favorites.FavoritesScreen
 import com.souza.mypokes.presentation.pokemon.PokemonListScreen
 import com.souza.mypokes.presentation.splash.SplashScreen
 
@@ -44,8 +45,11 @@ fun AppNavGraph(
         }
 
         composable(Screen.Favorites.route) {
-            // Implemented in Step 9
-            PlaceholderScreen("Favorites")
+            FavoritesScreen(
+                onNavigateToDetail = { pokemonId ->
+                    navController.navigate(Screen.PokemonDetail.createRoute(pokemonId))
+                },
+            )
         }
 
         composable(Screen.Settings.route) {
