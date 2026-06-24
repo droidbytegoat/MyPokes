@@ -15,7 +15,6 @@ sealed interface PokemonListIntent : UiIntent {
     // Internal — dispatched by middleware or ViewModel
     data class PokemonListLoaded(val pokemon: List<Pokemon>) : PokemonListIntent
     data class LoadMoreLoaded(val pokemon: List<Pokemon>) : PokemonListIntent
-    data class SearchResultsLoaded(val results: List<Pokemon>) : PokemonListIntent
     data class UpdateFavorites(val favoriteIds: Set<Int>) : PokemonListIntent
     data class LoadFailed(val message: String) : PokemonListIntent
 }

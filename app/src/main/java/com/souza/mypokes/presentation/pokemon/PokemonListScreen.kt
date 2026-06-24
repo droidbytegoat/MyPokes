@@ -1,5 +1,6 @@
 package com.souza.mypokes.presentation.pokemon
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,10 +21,13 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -31,7 +35,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -60,9 +66,11 @@ fun PokemonListScreen(
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        SearchBar(
+        SearchBarWithAutocomplete(
             query = state.searchQuery,
+            suggestions = state.autocompleteItems,
             onQueryChange = { viewModel.dispatch(PokemonListIntent.Search(it)) },
+            onSuggestionClick = { viewModel.dispatch(PokemonListIntent.Search(it)) },
             onClear = { viewModel.dispatch(PokemonListIntent.ClearSearch) },
             modifier = Modifier
                 .fillMaxWidth()
@@ -90,28 +98,73 @@ fun PokemonListScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SearchBar(
+private fun SearchBarWithAutocomplete(
     query: String,
+    suggestions: List<String>,
     onQueryChange: (String) -> Unit,
+    onSuggestionClick: (String) -> Unit,
     onClear: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    OutlinedTextField(
-        value = query,
-        onValueChange = onQueryChange,
-        placeholder = { Text("Search Pokémon…") },
-        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-        trailingIcon = {
-            if (query.isNotEmpty()) {
-                IconButton(onClick = onClear) {
-                    Icon(Icons.Default.Close, contentDescription = "Clear search")
+    var expanded by remember { mutableStateOf(false) }
+
+    // Open dropdown when suggestions arrive; close when query is cleared
+    LaunchedEffect(suggestions) {
+        expanded = suggestions.isNotEmpty()
+    }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = it },
+        modifier = modifier,
+    ) {
+        OutlinedTextField(
+            value = query,
+            onValueChange = onQueryChange,
+            placeholder = { Text("Filter Pokémon…") },
+            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+            trailingIcon = {
+                if (query.isNotEmpty()) {
+                    IconButton(onClick = {
+                        onClear()
+                        expanded = false
+                    }) {
+                        Icon(Icons.Default.Close, contentDescription = "Clear")
+                    }
+                }
+            },
+            singleLine = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor(MenuAnchorType.PrimaryEditable),
+        )
+
+        if (suggestions.isNotEmpty()) {
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+            ) {
+                suggestions.forEach { name ->
+                    DropdownMenuItem(
+                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                        text = {
+                            Text(
+                                text = name,
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        },
+                        onClick = {
+                            onSuggestionClick(name)
+                            expanded = false
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
                 }
             }
-        },
-        singleLine = true,
-        modifier = modifier,
-    )
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -133,7 +186,7 @@ private fun PokemonGridContent(
     }
 
     LaunchedEffect(shouldLoadMore) {
-        if (shouldLoadMore) onLoadMore()
+        if (shouldLoadMore && !state.isSearchActive) onLoadMore()
     }
 
     PullToRefreshBox(
@@ -186,7 +239,9 @@ private fun LoadingContent() {
 @Composable
 private fun ErrorContent(message: String, onRetry: () -> Unit) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(32.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {

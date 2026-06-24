@@ -13,7 +13,9 @@ class PokemonListReducerTest {
     private val reducer = PokemonListReducer()
     private val initial = PokemonListState()
 
-    private fun pokemon(id: Int) = Pokemon(id = id, name = "pokemon-$id", imageUrl = "url-$id")
+    private fun pokemon(id: Int, name: String = "pokemon-$id") =
+        Pokemon(id = id, name = name, imageUrl = "url-$id")
+
     private val page = (1..GetPokemonListUseCase.PAGE_SIZE).map { pokemon(it) }
 
     // ── LoadInitial ──────────────────────────────────────────────────────────
@@ -49,15 +51,13 @@ class PokemonListReducerTest {
     @Test
     fun `LoadNextPage is no-op when already in flight`() {
         val state = initial.copy(isRequestInFlight = true, hasNextPage = true)
-        val result = reducer.reduce(state, PokemonListIntent.LoadNextPage)
-        assertEquals(state, result)
+        assertEquals(state, reducer.reduce(state, PokemonListIntent.LoadNextPage))
     }
 
     @Test
     fun `LoadNextPage is no-op when no next page`() {
         val state = initial.copy(isRequestInFlight = false, hasNextPage = false)
-        val result = reducer.reduce(state, PokemonListIntent.LoadNextPage)
-        assertEquals(state, result)
+        assertEquals(state, reducer.reduce(state, PokemonListIntent.LoadNextPage))
     }
 
     // ── Search / ClearSearch ─────────────────────────────────────────────────
@@ -76,16 +76,11 @@ class PokemonListReducerTest {
     }
 
     @Test
-    fun `ClearSearch resets search state`() {
-        val withSearch = initial.copy(
-            searchQuery = "pika",
-            isSearchActive = true,
-            searchResults = listOf(pokemon(25)),
-        )
+    fun `ClearSearch resets searchQuery`() {
+        val withSearch = reducer.reduce(initial, PokemonListIntent.Search("pika"))
         val result = reducer.reduce(withSearch, PokemonListIntent.ClearSearch)
         assertEquals("", result.searchQuery)
         assertFalse(result.isSearchActive)
-        assertTrue(result.searchResults.isEmpty())
     }
 
     // ── PokemonListLoaded ────────────────────────────────────────────────────
@@ -104,15 +99,13 @@ class PokemonListReducerTest {
 
     @Test
     fun `PokemonListLoaded sets hasNextPage false when fewer than PAGE_SIZE returned`() {
-        val smallPage = listOf(pokemon(1), pokemon(2))
-        val result = reducer.reduce(initial, PokemonListIntent.PokemonListLoaded(smallPage))
+        val result = reducer.reduce(initial, PokemonListIntent.PokemonListLoaded(listOf(pokemon(1))))
         assertFalse(result.hasNextPage)
     }
 
     @Test
     fun `PokemonListLoaded sets hasNextPage true when full page returned`() {
-        val result = reducer.reduce(initial, PokemonListIntent.PokemonListLoaded(page))
-        assertTrue(result.hasNextPage)
+        assertTrue(reducer.reduce(initial, PokemonListIntent.PokemonListLoaded(page)).hasNextPage)
     }
 
     // ── LoadMoreLoaded ───────────────────────────────────────────────────────
@@ -125,21 +118,11 @@ class PokemonListReducerTest {
             isLoadingMore = true,
             isRequestInFlight = true,
         )
-        val morePokemon = listOf(pokemon(2), pokemon(3))
-        val result = reducer.reduce(existingState, PokemonListIntent.LoadMoreLoaded(morePokemon))
+        val result = reducer.reduce(existingState, PokemonListIntent.LoadMoreLoaded(listOf(pokemon(2), pokemon(3))))
         assertEquals(3, result.pokemon.size)
         assertFalse(result.isLoadingMore)
         assertFalse(result.isRequestInFlight)
         assertEquals(3, result.currentOffset)
-    }
-
-    // ── SearchResultsLoaded ──────────────────────────────────────────────────
-
-    @Test
-    fun `SearchResultsLoaded updates searchResults`() {
-        val results = listOf(pokemon(25))
-        val result = reducer.reduce(initial, PokemonListIntent.SearchResultsLoaded(results))
-        assertEquals(results, result.searchResults)
     }
 
     // ── UpdateFavorites ──────────────────────────────────────────────────────
@@ -147,8 +130,7 @@ class PokemonListReducerTest {
     @Test
     fun `UpdateFavorites replaces favoriteIds set`() {
         val ids = setOf(1, 4, 7)
-        val result = reducer.reduce(initial, PokemonListIntent.UpdateFavorites(ids))
-        assertEquals(ids, result.favoriteIds)
+        assertEquals(ids, reducer.reduce(initial, PokemonListIntent.UpdateFavorites(ids)).favoriteIds)
     }
 
     // ── LoadFailed ───────────────────────────────────────────────────────────
@@ -164,39 +146,70 @@ class PokemonListReducerTest {
         assertEquals("Network error", result.error)
     }
 
-    // ── displayList ──────────────────────────────────────────────────────────
+    // ── displayList (computed local filter) ──────────────────────────────────
 
     @Test
-    fun `displayList returns pokemon when search is inactive`() {
-        val state = initial.copy(
-            pokemon = listOf(pokemon(1)),
-            searchResults = listOf(pokemon(2)),
-            isSearchActive = false,
-        )
+    fun `displayList returns all pokemon when query is blank`() {
+        val state = initial.copy(pokemon = listOf(pokemon(1, "bulbasaur"), pokemon(2, "ivysaur")))
         assertEquals(state.pokemon, state.displayList)
     }
 
     @Test
-    fun `displayList returns searchResults when search is active`() {
+    fun `displayList filters by name containing query`() {
         val state = initial.copy(
-            pokemon = listOf(pokemon(1)),
-            searchResults = listOf(pokemon(2)),
-            isSearchActive = true,
+            pokemon = listOf(pokemon(1, "bulbasaur"), pokemon(25, "pikachu"), pokemon(2, "ivysaur")),
+            searchQuery = "saur",
         )
-        assertEquals(state.searchResults, state.displayList)
+        assertEquals(listOf(pokemon(1, "bulbasaur"), pokemon(2, "ivysaur")), state.displayList)
+    }
+
+    @Test
+    fun `displayList filter is case-insensitive`() {
+        val state = initial.copy(
+            pokemon = listOf(pokemon(1, "bulbasaur")),
+            searchQuery = "BULBA",
+        )
+        assertEquals(1, state.displayList.size)
+    }
+
+    // ── autocompleteItems ────────────────────────────────────────────────────
+
+    @Test
+    fun `autocompleteItems is empty when query is blank`() {
+        val state = initial.copy(pokemon = listOf(pokemon(1, "bulbasaur")), searchQuery = "")
+        assertTrue(state.autocompleteItems.isEmpty())
+    }
+
+    @Test
+    fun `autocompleteItems returns at most 3 suggestions`() {
+        val state = initial.copy(
+            pokemon = (1..10).map { pokemon(it, "poke-$it") },
+            searchQuery = "poke",
+        )
+        assertTrue(state.autocompleteItems.size <= 3)
+    }
+
+    @Test
+    fun `autocompleteItems puts startsWith matches before contains matches`() {
+        val state = initial.copy(
+            pokemon = listOf(
+                pokemon(1, "bulbasaur"),   // contains "saur"
+                pokemon(2, "sauron"),      // starts with "saur"
+            ),
+            searchQuery = "saur",
+        )
+        assertEquals(listOf("sauron", "bulbasaur"), state.autocompleteItems)
     }
 
     // ── No-op intents ────────────────────────────────────────────────────────
 
     @Test
     fun `OnPokemonClick does not change state`() {
-        val result = reducer.reduce(initial, PokemonListIntent.OnPokemonClick(1))
-        assertEquals(initial, result)
+        assertEquals(initial, reducer.reduce(initial, PokemonListIntent.OnPokemonClick(1)))
     }
 
     @Test
     fun `ToggleFavorite does not change state`() {
-        val result = reducer.reduce(initial, PokemonListIntent.ToggleFavorite(pokemon(1)))
-        assertEquals(initial, result)
+        assertEquals(initial, reducer.reduce(initial, PokemonListIntent.ToggleFavorite(pokemon(1))))
     }
 }
