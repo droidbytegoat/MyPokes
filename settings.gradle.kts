@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "MyPokes"
 include(":app")
+include(":shared")
