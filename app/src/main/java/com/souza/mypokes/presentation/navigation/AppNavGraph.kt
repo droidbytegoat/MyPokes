@@ -11,6 +11,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.souza.mypokes.presentation.pokemon.PokemonListScreen
 import com.souza.mypokes.presentation.splash.SplashScreen
 
 @Composable
@@ -34,8 +35,11 @@ fun AppNavGraph(
         }
 
         composable(Screen.PokemonList.route) {
-            // Implemented in Step 7
-            PlaceholderScreen("Pokémon List")
+            PokemonListScreen(
+                onNavigateToDetail = { pokemonId ->
+                    navController.navigate(Screen.PokemonDetail.createRoute(pokemonId))
+                },
+            )
         }
 
         composable(Screen.Favorites.route) {

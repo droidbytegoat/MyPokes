@@ -25,13 +25,14 @@ abstract class BaseViewModel<S : UiState, I : UiIntent, E : UiEffect>(
     val effects: Flow<E> = _effects.receiveAsFlow()
 
     fun dispatch(intent: I) {
+        val previousState = _state.value
         _state.update { reducer.reduce(it, intent) }
         viewModelScope.launch {
             middlewares.forEach { middleware ->
                 launch {
                     middleware.process(
                         intent = intent,
-                        state = _state.value,
+                        state = previousState,
                         dispatch = ::dispatch,
                         sendEffect = ::sendEffect,
                     )
