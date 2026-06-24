@@ -26,14 +26,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.palette.graphics.Palette
 import coil3.BitmapImage
 import coil3.compose.AsyncImage
+import com.souza.mypokes.R
 import com.souza.mypokes.domain.model.Pokemon
+import com.souza.mypokes.presentation.theme.Dimens
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -81,7 +83,7 @@ fun PokemonCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
-                        .padding(8.dp),
+                        .padding(Dimens.paddingS),
                 )
                 Text(
                     text = pokemon.name,
@@ -92,8 +94,8 @@ fun PokemonCard(
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp)
-                        .padding(bottom = 8.dp),
+                        .padding(horizontal = Dimens.paddingS)
+                        .padding(bottom = Dimens.paddingS),
                 )
             }
 
@@ -101,13 +103,16 @@ fun PokemonCard(
                 onClick = onFavoriteClick,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .size(36.dp),
+                    .size(Dimens.favoriteIconSize),
             ) {
                 Icon(
                     imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                    contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites",
-                    tint = if (isFavorite) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(20.dp),
+                    contentDescription = stringResource(
+                        if (isFavorite) R.string.cd_remove_favorite else R.string.cd_add_favorite
+                    ),
+                    tint = if (isFavorite) MaterialTheme.colorScheme.error
+                           else MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(Dimens.favoriteIconInner),
                 )
             }
         }

@@ -40,10 +40,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.souza.mypokes.R
+import com.souza.mypokes.presentation.theme.Dimens
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 private const val GRID_COLUMNS = 2
@@ -74,7 +76,7 @@ fun PokemonListScreen(
             onClear = { viewModel.dispatch(PokemonListIntent.ClearSearch) },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .padding(horizontal = Dimens.paddingL, vertical = Dimens.paddingS),
         )
 
         Box(modifier = Modifier.fillMaxSize()) {
@@ -123,15 +125,15 @@ private fun SearchBarWithAutocomplete(
         OutlinedTextField(
             value = query,
             onValueChange = onQueryChange,
-            placeholder = { Text("Filter Pokémon…") },
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+            placeholder = { Text(stringResource(R.string.search_placeholder)) },
+            leadingIcon = { Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search_cd)) },
             trailingIcon = {
                 if (query.isNotEmpty()) {
                     IconButton(onClick = {
                         onClear()
                         expanded = false
                     }) {
-                        Icon(Icons.Default.Close, contentDescription = "Clear")
+                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.search_clear_cd))
                     }
                 }
             },
@@ -197,9 +199,9 @@ private fun PokemonGridContent(
         LazyVerticalGrid(
             columns = GridCells.Fixed(GRID_COLUMNS),
             state = gridState,
-            contentPadding = PaddingValues(12.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(Dimens.cardPadding),
+            verticalArrangement = Arrangement.spacedBy(Dimens.paddingS),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.paddingS),
         ) {
             items(
                 items = state.displayList,
@@ -218,10 +220,10 @@ private fun PokemonGridContent(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
+                            .padding(Dimens.paddingL),
                         contentAlignment = Alignment.Center,
                     ) {
-                        CircularProgressIndicator(modifier = Modifier.size(32.dp))
+                        CircularProgressIndicator(modifier = Modifier.size(Dimens.paddingHuge))
                     }
                 }
             }
@@ -241,24 +243,24 @@ private fun ErrorContent(message: String, onRetry: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(32.dp),
+            .padding(Dimens.paddingHuge),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
         Text(
-            text = "Oops! Something went wrong.",
+            text = stringResource(R.string.load_error_title),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold,
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(Dimens.paddingS))
         Text(
             text = message,
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        Spacer(modifier = Modifier.height(24.dp))
-        Button(onClick = onRetry) { Text("Try again") }
+        Spacer(modifier = Modifier.height(Dimens.paddingXxl))
+        Button(onClick = onRetry) { Text(stringResource(R.string.try_again)) }
     }
 }
 
@@ -266,7 +268,7 @@ private fun ErrorContent(message: String, onRetry: () -> Unit) {
 private fun EmptyContent() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Text(
-            text = "No Pokémon available.",
+            text = stringResource(R.string.no_pokemon),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -277,7 +279,7 @@ private fun EmptyContent() {
 private fun SearchEmptyContent(query: String) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Text(
-            text = "No results for \"$query\"",
+            text = stringResource(R.string.no_results, query),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,

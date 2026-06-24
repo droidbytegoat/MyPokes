@@ -1,3 +1,40 @@
 <resources>
     <string name="app_name">MyPokes</string>
+
+    <!-- Bottom nav -->
+    <string name="nav_pokemon">Pokémon</string>
+    <string name="nav_favorites">Favorites</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Pokemon list -->
+    <string name="search_placeholder">Filter Pokémon…</string>
+    <string name="search_clear_cd">Clear search</string>
+    <string name="search_cd">Search</string>
+    <string name="no_pokemon">No Pokémon available.</string>
+    <string name="no_results">No results for \"%s\"</string>
+    <string name="load_error_title">Oops! Something went wrong.</string>
+    <string name="try_again">Try again</string>
+
+    <!-- Favorites -->
+    <string name="screen_favorites">Favorites</string>
+    <string name="no_favorites">No favorites yet.\nTap the heart on any Pokémon to save it here.</string>
+
+    <!-- Settings -->
+    <string name="screen_settings">Settings</string>
+    <string name="section_appearance">Appearance</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_light_desc">Always use light theme</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_dark_desc">Always use dark theme</string>
+    <string name="theme_system">Follow system</string>
+    <string name="theme_system_desc">Match your device\'s theme</string>
+
+    <!-- Detail -->
+    <string name="load_error_detail">Could not load Pokémon.</string>
+    <string name="base_stats">Base Stats</string>
+    <string name="stat_height">Height</string>
+    <string name="stat_weight">Weight</string>
+    <string name="cd_back">Back</string>
+    <string name="cd_add_favorite">Add to favorites</string>
+    <string name="cd_remove_favorite">Remove from favorites</string>
 </resources>

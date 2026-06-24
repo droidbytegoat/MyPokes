@@ -44,7 +44,8 @@ android {
 }
 
 dependencies {
-    implementation(project(":shared"))
+    implementation(project(":domain"))
+    implementation(project(":data"))
 
     // Core
     implementation(libs.androidx.core.ktx)
@@ -72,12 +73,10 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
 
-    // Room
+    // Room (runtime needed by DatabaseModule; KSP and entities live in :data)
     implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    ksp(libs.room.compiler)
 
-    // DataStore
+    // DataStore (needed by DataStoreModule)
     implementation(libs.datastore.preferences)
 
     // Ktor (types referenced in Hilt modules must be on app's compile classpath)
@@ -86,6 +85,9 @@ dependencies {
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
+
+    // Animation
+    implementation(libs.compose.animation)
 
     // Image loading
     implementation(libs.coil.compose)
