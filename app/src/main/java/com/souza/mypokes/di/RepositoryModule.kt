@@ -1,6 +1,7 @@
 package com.souza.mypokes.di
 
 import com.souza.mypokes.data.local.datasource.LocalFavoritesDataSource
+import com.souza.mypokes.data.local.datasource.LocalPokemonDataSource
 import com.souza.mypokes.data.remote.datasource.RemotePokemonDataSource
 import com.souza.mypokes.data.repository.FavoritesRepositoryImpl
 import com.souza.mypokes.data.repository.PokemonRepositoryImpl
@@ -20,7 +21,8 @@ object RepositoryModule {
     @Singleton
     fun providePokemonRepository(
         remoteDataSource: RemotePokemonDataSource,
-    ): PokemonRepository = PokemonRepositoryImpl(remoteDataSource)
+        localDataSource: LocalPokemonDataSource,
+    ): PokemonRepository = PokemonRepositoryImpl(remoteDataSource, localDataSource)
 
     @Provides
     @Singleton

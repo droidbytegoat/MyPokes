@@ -18,7 +18,7 @@ class PokemonListMiddleware(
         when (intent) {
             PokemonListIntent.LoadInitial -> fetchPage(offset = 0, dispatch)
 
-            PokemonListIntent.Refresh -> fetchPage(offset = 0, dispatch)
+            PokemonListIntent.Refresh -> fetchPage(offset = 0, dispatch, forceRefresh = true)
 
             PokemonListIntent.LoadNextPage -> {
                 if (!state.isRequestInFlight && state.hasNextPage && !state.isSearchActive) {
@@ -35,8 +35,12 @@ class PokemonListMiddleware(
         }
     }
 
-    private suspend fun fetchPage(offset: Int, dispatch: (PokemonListIntent) -> Unit) {
-        getPokemonListUseCase(offset).fold(
+    private suspend fun fetchPage(
+        offset: Int,
+        dispatch: (PokemonListIntent) -> Unit,
+        forceRefresh: Boolean = false,
+    ) {
+        getPokemonListUseCase(offset, forceRefresh = forceRefresh).fold(
             onSuccess = { dispatch(PokemonListIntent.PokemonListLoaded(it)) },
             onFailure = { dispatch(PokemonListIntent.LoadFailed(it.message ?: "Failed to load Pokémon")) },
         )
