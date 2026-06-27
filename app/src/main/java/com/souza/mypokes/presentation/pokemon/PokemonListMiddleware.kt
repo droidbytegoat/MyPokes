@@ -2,7 +2,7 @@ package com.souza.mypokes.presentation.pokemon
 
 import com.souza.mypokes.domain.usecase.GetPokemonListUseCase
 import com.souza.mypokes.domain.usecase.ToggleFavoriteUseCase
-import com.souza.mypokes.presentation.mvi.Middleware
+import com.souza.mypokes.base.Middleware
 
 class PokemonListMiddleware(
     private val getPokemonListUseCase: GetPokemonListUseCase,

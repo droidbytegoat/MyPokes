@@ -1,7 +1,7 @@
 package com.souza.mypokes.presentation.detail
 
 import com.souza.mypokes.domain.model.PokemonDetail
-import com.souza.mypokes.presentation.mvi.UiIntent
+import com.souza.mypokes.base.UiIntent
 
 sealed interface PokemonDetailIntent : UiIntent {
     data class LoadDetail(val pokemonId: Int) : PokemonDetailIntent

@@ -1,6 +1,6 @@
 package com.souza.mypokes.presentation.settings
 
-import com.souza.mypokes.presentation.mvi.Reducer
+import com.souza.mypokes.base.Reducer
 
 class SettingsReducer : Reducer<SettingsState, SettingsIntent> {
 

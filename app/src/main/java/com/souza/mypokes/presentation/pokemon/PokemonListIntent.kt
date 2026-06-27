@@ -1,7 +1,7 @@
 package com.souza.mypokes.presentation.pokemon
 
 import com.souza.mypokes.domain.model.Pokemon
-import com.souza.mypokes.presentation.mvi.UiIntent
+import com.souza.mypokes.base.UiIntent
 
 sealed interface PokemonListIntent : UiIntent {
     data object LoadInitial : PokemonListIntent

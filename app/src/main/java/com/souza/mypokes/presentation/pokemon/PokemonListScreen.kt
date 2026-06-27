@@ -73,6 +73,18 @@ fun PokemonListScreen(
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
+        Text(
+            text = stringResource(R.string.home_title),
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(
+                start = Dimens.paddingL,
+                end = Dimens.paddingL,
+                top = Dimens.paddingL,
+                bottom = Dimens.paddingXs,
+            ),
+        )
+
         SearchBarWithAutocomplete(
             query = state.searchQuery,
             suggestions = state.autocompleteItems,

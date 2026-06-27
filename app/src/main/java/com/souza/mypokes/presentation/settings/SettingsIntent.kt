@@ -1,7 +1,7 @@
 package com.souza.mypokes.presentation.settings
 
 import com.souza.mypokes.data.preferences.AppTheme
-import com.souza.mypokes.presentation.mvi.UiIntent
+import com.souza.mypokes.base.UiIntent
 
 sealed interface SettingsIntent : UiIntent {
     data class SetTheme(val theme: AppTheme) : SettingsIntent

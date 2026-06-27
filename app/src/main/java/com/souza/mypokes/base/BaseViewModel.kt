@@ -1,4 +1,4 @@
-package com.souza.mypokes.presentation.mvi
+package com.souza.mypokes.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

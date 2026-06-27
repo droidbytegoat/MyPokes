@@ -1,5 +1,5 @@
 package com.souza.mypokes.presentation.settings
 
-import com.souza.mypokes.presentation.mvi.UiEffect
+import com.souza.mypokes.base.UiEffect
 
 sealed interface SettingsEffect : UiEffect

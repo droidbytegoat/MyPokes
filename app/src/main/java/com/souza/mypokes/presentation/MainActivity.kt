@@ -16,6 +16,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.souza.mypokes.data.preferences.AppTheme
 import com.souza.mypokes.presentation.navigation.AppNavGraph
 import com.souza.mypokes.presentation.navigation.BottomNavBar
 import com.souza.mypokes.presentation.navigation.Screen
@@ -40,14 +41,14 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
 
             MyPokesTheme(appTheme = theme) {
-                MainScaffold(navController = navController)
+                MainScaffold(navController = navController, appTheme = theme)
             }
         }
     }
 }
 
 @Composable
-private fun MainScaffold(navController: NavHostController) {
+private fun MainScaffold(navController: NavHostController, appTheme: AppTheme) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -60,6 +61,7 @@ private fun MainScaffold(navController: NavHostController) {
     ) { paddingValues ->
         AppNavGraph(
             navController = navController,
+            appTheme = appTheme,
             modifier = Modifier
                 .padding(paddingValues)
                 .consumeWindowInsets(paddingValues),

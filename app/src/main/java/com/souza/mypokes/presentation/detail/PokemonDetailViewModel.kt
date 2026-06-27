@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.souza.mypokes.domain.usecase.GetFavoritesUseCase
 import com.souza.mypokes.domain.usecase.GetPokemonDetailUseCase
 import com.souza.mypokes.domain.usecase.ToggleFavoriteUseCase
-import com.souza.mypokes.presentation.mvi.BaseViewModel
-import com.souza.mypokes.presentation.mvi.Middleware
-import com.souza.mypokes.presentation.mvi.Reducer
+import com.souza.mypokes.base.BaseViewModel
+import com.souza.mypokes.base.Middleware
+import com.souza.mypokes.base.Reducer
 import com.souza.mypokes.presentation.navigation.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.map

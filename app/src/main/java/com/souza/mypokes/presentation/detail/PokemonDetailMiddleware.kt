@@ -3,7 +3,7 @@ package com.souza.mypokes.presentation.detail
 import com.souza.mypokes.domain.model.Pokemon
 import com.souza.mypokes.domain.usecase.GetPokemonDetailUseCase
 import com.souza.mypokes.domain.usecase.ToggleFavoriteUseCase
-import com.souza.mypokes.presentation.mvi.Middleware
+import com.souza.mypokes.base.Middleware
 
 class PokemonDetailMiddleware(
     private val getPokemonDetailUseCase: GetPokemonDetailUseCase,

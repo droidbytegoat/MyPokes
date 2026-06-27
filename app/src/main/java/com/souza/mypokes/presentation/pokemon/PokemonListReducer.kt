@@ -1,7 +1,7 @@
 package com.souza.mypokes.presentation.pokemon
 
 import com.souza.mypokes.domain.usecase.GetPokemonListUseCase
-import com.souza.mypokes.presentation.mvi.Reducer
+import com.souza.mypokes.base.Reducer
 
 class PokemonListReducer : Reducer<PokemonListState, PokemonListIntent> {
 

@@ -1,7 +1,7 @@
 package com.souza.mypokes.presentation.settings
 
 import com.souza.mypokes.data.preferences.ThemePreferencesDataSource
-import com.souza.mypokes.presentation.mvi.Middleware
+import com.souza.mypokes.base.Middleware
 
 class SettingsMiddleware(
     private val themePreferencesDataSource: ThemePreferencesDataSource,

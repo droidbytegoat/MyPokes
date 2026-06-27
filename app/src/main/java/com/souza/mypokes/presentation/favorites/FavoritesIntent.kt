@@ -1,7 +1,7 @@
 package com.souza.mypokes.presentation.favorites
 
 import com.souza.mypokes.domain.model.Pokemon
-import com.souza.mypokes.presentation.mvi.UiIntent
+import com.souza.mypokes.base.UiIntent
 
 sealed interface FavoritesIntent : UiIntent {
     data class OnPokemonClick(val pokemonId: Int) : FavoritesIntent

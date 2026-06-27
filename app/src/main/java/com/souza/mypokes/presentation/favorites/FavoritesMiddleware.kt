@@ -1,7 +1,7 @@
 package com.souza.mypokes.presentation.favorites
 
 import com.souza.mypokes.domain.usecase.ToggleFavoriteUseCase
-import com.souza.mypokes.presentation.mvi.Middleware
+import com.souza.mypokes.base.Middleware
 
 class FavoritesMiddleware(
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,

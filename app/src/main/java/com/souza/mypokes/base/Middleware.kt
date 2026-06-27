@@ -1,4 +1,4 @@
-package com.souza.mypokes.presentation.mvi
+package com.souza.mypokes.base
 
 interface Middleware<S : UiState, I : UiIntent, E : UiEffect> {
     suspend fun process(

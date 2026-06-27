@@ -1,8 +1,17 @@
 package com.souza.mypokes.presentation.detail
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,6 +45,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,7 +57,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.souza.mypokes.R
 import com.souza.mypokes.domain.model.PokemonDetail
 import com.souza.mypokes.domain.model.PokemonStat
@@ -66,6 +83,7 @@ fun PokemonDetailScreen(
     viewModel: PokemonDetailViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    var showImageDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.effects.collect { effect ->
@@ -121,13 +139,17 @@ fun PokemonDetailScreen(
         ) {
             with(sharedTransitionScope) {
                 AsyncImage(
-                    model = state.pokemon?.imageUrl ?: officialArtworkUrl(pokemonId),
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(state.pokemon?.imageUrl ?: officialArtworkUrl(pokemonId))
+                        .crossfade(true)
+                        .build(),
                     contentDescription = state.pokemon?.name,
                     contentScale = ContentScale.Fit,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(Dimens.heroImageHeight)
                         .padding(Dimens.heroImagePadding)
+                        .clickable { showImageDialog = true }
                         .sharedElement(
                             sharedContentState = rememberSharedContentState(key = "pokemon-image-$pokemonId"),
                             animatedVisibilityScope = animatedVisibilityScope,
@@ -142,6 +164,45 @@ fun PokemonDetailScreen(
                     onRetry = { viewModel.dispatch(PokemonDetailIntent.LoadDetail(pokemonId)) },
                 )
                 state.pokemon != null -> StatsSection(pokemon = state.pokemon!!)
+            }
+        }
+    }
+
+    if (showImageDialog) {
+        Dialog(
+            onDismissRequest = { showImageDialog = false },
+            properties = DialogProperties(usePlatformDefaultWidth = false),
+        ) {
+            var animateIn by remember { mutableStateOf(false) }
+            LaunchedEffect(Unit) { animateIn = true }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.85f))
+                    .clickable { showImageDialog = false },
+                contentAlignment = Alignment.Center,
+            ) {
+                AnimatedVisibility(
+                    visible = animateIn,
+                    enter = scaleIn(
+                        initialScale = 0.3f,
+                        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+                    ) + fadeIn(),
+                    exit = scaleOut(targetScale = 0.3f) + fadeOut(),
+                ) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(state.pokemon?.imageUrl ?: officialArtworkUrl(pokemonId))
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = state.pokemon?.name,
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(Dimens.paddingXxl),
+                    )
+                }
             }
         }
     }

@@ -35,8 +35,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.palette.graphics.Palette
+import androidx.compose.ui.platform.LocalContext
 import coil3.BitmapImage
 import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.souza.mypokes.R
 import com.souza.mypokes.domain.model.Pokemon
 import com.souza.mypokes.presentation.theme.Dimens
@@ -73,7 +76,10 @@ fun PokemonCard(
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 with(sharedTransitionScope) {
                     AsyncImage(
-                        model = pokemon.imageUrl,
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(pokemon.imageUrl)
+                            .crossfade(true)
+                            .build(),
                         contentDescription = pokemon.name,
                         contentScale = ContentScale.Fit,
                         onSuccess = { state ->
@@ -99,8 +105,17 @@ fun PokemonCard(
                     )
                 }
                 Text(
-                    text = pokemon.name,
+                    text = "#${pokemon.id.toString().padStart(3, '0')}",
                     style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = Dimens.paddingS),
+                )
+                Text(
+                    text = pokemon.name,
+                    style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center,
                     maxLines = 1,

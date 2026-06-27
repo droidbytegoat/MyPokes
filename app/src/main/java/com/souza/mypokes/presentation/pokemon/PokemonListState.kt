@@ -1,7 +1,7 @@
 package com.souza.mypokes.presentation.pokemon
 
 import com.souza.mypokes.domain.model.Pokemon
-import com.souza.mypokes.presentation.mvi.UiState
+import com.souza.mypokes.base.UiState
 
 private const val AUTOCOMPLETE_MAX = 3
 
