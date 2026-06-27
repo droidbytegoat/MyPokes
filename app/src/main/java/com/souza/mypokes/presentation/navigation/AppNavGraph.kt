@@ -1,5 +1,6 @@
 package com.souza.mypokes.presentation.navigation
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -13,6 +14,7 @@ import com.souza.mypokes.presentation.favorites.FavoritesScreen
 import com.souza.mypokes.presentation.settings.SettingsScreen
 import com.souza.mypokes.presentation.pokemon.PokemonListScreen
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun AppNavGraph(
     navController: NavHostController,

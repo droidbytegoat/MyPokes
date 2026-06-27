@@ -36,4 +36,8 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.javax.inject)
+
+    testImplementation(kotlin("test"))
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.turbine)
 }

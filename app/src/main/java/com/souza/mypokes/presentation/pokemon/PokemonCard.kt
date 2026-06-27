@@ -1,6 +1,7 @@
 package com.souza.mypokes.presentation.pokemon
 
 import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.SharedTransitionScope.OverlayClip
 import androidx.compose.foundation.layout.Box
@@ -42,6 +43,7 @@ import com.souza.mypokes.presentation.theme.Dimens
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun PokemonCard(
     pokemon: Pokemon,
@@ -91,7 +93,7 @@ fun PokemonCard(
                             .weight(1f)
                             .padding(Dimens.paddingS)
                             .sharedElement(
-                                state = rememberSharedContentState(key = "pokemon-image-${pokemon.id}"),
+                                sharedContentState = rememberSharedContentState(key = "pokemon-image-${pokemon.id}"),
                                 animatedVisibilityScope = animatedVisibilityScope,
                             ),
                     )

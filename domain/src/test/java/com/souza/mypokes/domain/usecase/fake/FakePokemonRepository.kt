@@ -13,7 +13,7 @@ class FakePokemonRepository : PokemonRepository {
     var shouldFail = false
     var errorMessage = "Repository error"
 
-    override suspend fun getPokemonList(offset: Int, limit: Int): Result<List<Pokemon>> {
+    override suspend fun getPokemonList(offset: Int, limit: Int, forceRefresh: Boolean): Result<List<Pokemon>> {
         if (shouldFail) return Result.failure(Exception(errorMessage))
         return Result.success(pokemonList.drop(offset).take(limit))
     }

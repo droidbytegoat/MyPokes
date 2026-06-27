@@ -1,5 +1,6 @@
 package com.souza.mypokes.data.repository
 
+import com.souza.mypokes.data.repository.fake.FakeLocalPokemonDataSource
 import com.souza.mypokes.data.repository.fake.FakeRemotePokemonDataSource
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -9,7 +10,8 @@ import kotlin.test.assertTrue
 class PokemonRepositoryImplTest {
 
     private val remoteDataSource = FakeRemotePokemonDataSource()
-    private val repository = PokemonRepositoryImpl(remoteDataSource)
+    private val localDataSource = FakeLocalPokemonDataSource()
+    private val repository = PokemonRepositoryImpl(remoteDataSource, localDataSource)
 
     @Test
     fun `getPokemonList returns success with mapped list`() = runTest {

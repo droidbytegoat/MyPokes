@@ -1,6 +1,7 @@
 package com.souza.mypokes.presentation.detail
 
 import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -55,7 +56,7 @@ private const val MAX_STAT_VALUE = 255f
 private fun officialArtworkUrl(id: Int) =
     "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$id.png"
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun PokemonDetailScreen(
     pokemonId: Int,
@@ -110,6 +111,7 @@ fun PokemonDetailScreen(
                 windowInsets = WindowInsets(0),
             )
         },
+        contentWindowInsets = WindowInsets(0),
     ) { padding ->
         Column(
             modifier = Modifier
@@ -127,7 +129,7 @@ fun PokemonDetailScreen(
                         .height(Dimens.heroImageHeight)
                         .padding(Dimens.heroImagePadding)
                         .sharedElement(
-                            state = rememberSharedContentState(key = "pokemon-image-$pokemonId"),
+                            sharedContentState = rememberSharedContentState(key = "pokemon-image-$pokemonId"),
                             animatedVisibilityScope = animatedVisibilityScope,
                         ),
                 )

@@ -1,5 +1,6 @@
 package com.souza.mypokes.presentation.detail
 
+import com.souza.mypokes.domain.model.Pokemon
 import com.souza.mypokes.domain.usecase.GetPokemonDetailUseCase
 import com.souza.mypokes.domain.usecase.ToggleFavoriteUseCase
 import com.souza.mypokes.presentation.mvi.Middleware
@@ -24,7 +25,7 @@ class PokemonDetailMiddleware(
             }
             PokemonDetailIntent.ToggleFavorite -> {
                 state.pokemon?.let { detail ->
-                    val pokemon = com.souza.mypokes.domain.model.Pokemon(
+                    val pokemon = Pokemon(
                         id = detail.id,
                         name = detail.name,
                         imageUrl = detail.imageUrl,

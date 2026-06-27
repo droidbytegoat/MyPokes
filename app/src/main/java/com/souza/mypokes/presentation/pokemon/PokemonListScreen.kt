@@ -1,6 +1,7 @@
 package com.souza.mypokes.presentation.pokemon
 
 import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,13 +47,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.souza.mypokes.R
+import com.souza.mypokes.domain.model.Pokemon
 import com.souza.mypokes.presentation.theme.Dimens
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 private const val GRID_COLUMNS = 2
 private const val LOAD_MORE_THRESHOLD = 4
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun PokemonListScreen(
     sharedTransitionScope: SharedTransitionScope,
@@ -173,14 +175,14 @@ private fun SearchBarWithAutocomplete(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 private fun PokemonGridContent(
     state: PokemonListState,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     onPokemonClick: (Int) -> Unit,
-    onFavoriteClick: (com.souza.mypokes.domain.model.Pokemon) -> Unit,
+    onFavoriteClick: (Pokemon) -> Unit,
     onLoadMore: () -> Unit,
     onRefresh: () -> Unit,
 ) {
