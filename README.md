@@ -2,6 +2,18 @@
 
 A modern Pokédex built with Jetpack Compose, allowing you to browse all existing Pokémon, favorite your picks, and customize the app theme!
 
+<img width="270" height="600" alt="Screenshot_1782589336" src="https://github.com/user-attachments/assets/25fed4a1-586b-4b54-8294-bc57c958ba42" />
+<img width="270" height="600" alt="Screenshot_1782589340" src="https://github.com/user-attachments/assets/8a6532d9-e654-4839-a745-e6370b498cb8" />
+<img width="270" height="600" alt="Screenshot_1782587860" src="https://github.com/user-attachments/assets/04bed241-ebb3-4957-a1fb-386d8623349b" />
+<img width="270" height="600" alt="Screenshot_1782587871" src="https://github.com/user-attachments/assets/f1b1bd82-8c8d-406e-ace7-1460d7c858d0" />
+<img width="270" height="600" alt="Screenshot_1782587991" src="https://github.com/user-attachments/assets/83e440cc-63ac-415d-b71c-22166eda55f0" />
+<img width="270" height="600" alt="Screenshot_1782587993" src="https://github.com/user-attachments/assets/6dc967c4-d6ac-41cf-80fc-8ccae4ca33d7" />
+<img width="270" height="600" alt="Screenshot_1782587996" src="https://github.com/user-attachments/assets/278122ec-8e35-4c6b-a5e2-3cd41355d987" />
+<img width="270" height="600" alt="Screenshot_1782587997" src="https://github.com/user-attachments/assets/f3611e0b-2434-42da-b837-8ff748e9b636" />
+<img width="270" height="600" alt="Screenshot_1782587999" src="https://github.com/user-attachments/assets/3fbe154f-4f8c-4c85-ade7-64c20934a7ce" />
+
+
+
 ## Features
 
 **Pokémon List**
